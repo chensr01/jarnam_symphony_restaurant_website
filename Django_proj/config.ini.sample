@@ -1,0 +1,10 @@
+[Django]
+secret=
+
+[MySQL]
+user=
+password=
+
+[Email]
+hostuser=
+sendgridapi=

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Me - Jarnam Symphony</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'images/jarnam.ico' %}" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'restaurant/css/styles.css' %}" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <header>
+            <h1 class="site-heading text-center text-faded d-none d-lg-block">
+                <span class="site-heading-upper text-primary mb-3">Savoring the Harmony of Flavors</span>
+                <span class="site-heading-lower">Jarnam Symphony</span>
+            </h1>
+        </header>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="{% url 'home' %}">Jarnam Symphony</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'about' %}">About</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'reservation' %}">Reservation</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'menu' %}">Menu</a></li>
+                        <li class="nav-item px-lg-4 active"><a class="nav-link text-uppercase" href="{% url 'me' %}">Me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <section class="me-page">
+            <div class="container">
+                <div class="bg-faded rounded p-5 me-block">
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button logout-button">Logout</button>
+                    </form>
+                    
+                    <h2 class="section-heading mb-0 centralize">
+                        <span class="section-heading-lower">Hello, {{ request.user.username }}!</span>
+                    </h2>
+
+
+                    <div class="profile-container centralize">
+
+                        <div class="profile-image centralize">
+                            {% if not request.user.profile.picture %}
+                                <img src="{% static 'images/profile.jpg' %}" id="id_user_picture" alt="Default profile picture">
+                            {% else %}
+                                <img src="{% url 'photo' request.user.id %}" id="id_user_picture" alt="Profile picture">
+                            {% endif %}
+                        </div>
+                        <form method="post" enctype="multipart/form-data" action="{% url 'profile-pic' %}">
+                            {% csrf_token %}
+                            <div class="file-input-container">
+                            {{form}}
+                            </div>
+                            <div class="profilepic">
+                                <button type="submit" class="button" id="id_update_profile_button">Upload Picture</button>
+                            </div>
+                        </form>
+                        
+
+                    </div>
+                    
+
+
+                    <div class="reservations centralize">
+                        <h2>My Reservations</h2>
+                        {% for reservation in reservations %}
+                        <div class="reservation_display centralize">
+                            <div>
+                                <span>Reservation time: {{ reservation.creation_time|date:"Y-m-d" }} {{ reservation.timeslot.start_time }} - {{ reservation.timeslot.end_time }}</span>
+                            </div>
+
+                            <div>
+                                <span>Table capacity: {{ reservation.table.capacity }}</span>
+                            </div>
+
+                            <a href="{% url 'delete_reservation' reservation.id %}" class="delete-icon" title="Delete Reservation">❌</a>
+                            
+                        </div>
+                        {% empty %}
+                        <p>No reservations found for today.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="info centralize">
+                        <h2>My Information</h2>
+                        <form method="post" action="{% url 'update_info' %}">
+                            {% csrf_token %}
+                            <div>
+                                <label for="id_email">Email:</label>
+                                <input type="email" id="id_email" name="email" value="{{ request.user.email }}" required>
+                            </div>
+                            <div>
+                                <label for="id_first_name">First Name:</label>
+                                <input type="text" id="id_first_name" name="first_name" value="{{ request.user.first_name }}" required>
+                            </div>
+                            <div>
+                                <label for="id_last_name">Last Name:</label>
+                                <input type="text" id="id_last_name" name="last_name" value="{{ request.user.last_name }}" required>
+                            </div>
+                            <div class="infobutton">
+                                <button type="submit" class="button">Update Information</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+            </div>
+            
+        </section>
+        
+        <footer class="footer text-faded text-center py-5">
+            <div class="container">
+                <div class="footer-content">
+                    <a class="admin-button" href="{% url 'admin:index' %}">Admin</a>
+                    <span class="vertical-line"></span>
+                    <p class="m-0 small">Copyright &copy; Jarnam Symphony 2024</p>
+                </div>
+            </div>
+        </footer>
+
+        
+    </body>
+</html>

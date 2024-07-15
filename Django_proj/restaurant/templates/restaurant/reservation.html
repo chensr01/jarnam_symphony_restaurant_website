@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        {% load static %}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Reservations - Jarnam Symphony</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'images/jarnam.ico' %}" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'restaurant/css/styles.css' %}" rel="stylesheet" type="text/css">
+        <script src="{% static 'restaurant/js/reservation.js' %}" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body>
+        <header>
+            <h1 class="site-heading text-center text-faded d-none d-lg-block">
+                <span class="site-heading-upper text-primary mb-3">Savoring the Harmony of Flavors</span>
+                <span class="site-heading-lower">Jarnam Symphony</span>
+            </h1>
+        </header>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="{% url 'home' %}">Jarnam Symphony</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'about' %}">About</a></li>
+                        <li class="nav-item px-lg-4 active"><a class="nav-link text-uppercase" href="{% url 'reservation' %}">Reservation</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'menu' %}">Menu</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'me' %}">Me</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <section class="reservation-page">
+            <div class="container">
+                <!-- Reservation Form -->
+                <div class="bg-faded rounded-top-only p-5">
+                    <h2 class="section-heading mb-4">
+                        <span class="section-heading-bigupper">Book Your Table: Don't Miss Out!</span>
+                    </h2>
+                    <p>Welcome! To reserve a table, start by selecting your preferred time slot. Then, simply click on an available table to make your reservation for today. Tables highlighted in red are currently unavailable. Rest assured, the layout you see on our website mirrors the arrangement in our restaurant. Let's get you seated!</p>
+                    
+                    <form id="reservationForm">
+                        <label for="reservationTime" class="mr-2">Select a Time:</label>
+                        <div class="custom-select">
+                            <select id="reservationTime" name="time">
+                                <!-- Predefined time options -->
+                                {% for timeslot in timeslots %}
+                                <option value="{{ timeslot.start_time }}">{{ timeslot.start_time}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% csrf_token %}
+                        <!-- <button type="submit" class="btn-reserve">Reserve</button> -->
+                        <div id="error" style="color: red;"></div>
+                    </form>
+                </div>
+
+                
+        
+                <!-- Tables Layout -->
+                <div id="tablesLayout">
+                    <img src="/static/images/floorplan.png" alt="floorplan" id="floorplan">
+                </div>
+
+                <div class="bg-faded rounded-bottom-only p-5">
+                    <p><strong>Kindly Note</strong></p>
+                    <ul class="reservation-instructions">
+                        <li>You can modify or cancel your reservations at any time by visiting the 'Me' page on our website.</li>
+                        <li>If your plans change, we kindly ask that you cancel or modify your reservation at least 3 hours in advance.</li>
+                        <li>On occasion, we experience a high volume of guests. While we strive to honor all reservations promptly, there may be times when seating is delayed. Please be assured that we do our utmost to accommodate you as close to your reserved time as possible.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer text-faded text-center py-5">
+            <div class="container">
+                <div class="footer-content">
+                    <a class="admin-button" href="{% url 'admin:index' %}">Admin</a>
+                    <span class="vertical-line"></span>
+                    <p class="m-0 small">Copyright &copy; Jarnam Symphony 2024</p>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <!-- <script src="restaurant/js/scripts.js"></script> -->
+        <script>
+            window.onload = function() {
+                getList();
+            };
+            window.setInterval(getList, 1000);
+            document.getElementById('reservationTime').addEventListener('change', getList);
+            const makeReservationURL = "{% url 'make-reservation' %}"
+        </script>
+    </body>
+</html>

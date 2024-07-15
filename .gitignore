@@ -1,0 +1,10 @@
+/.vs/s24_team_14/FileContentIndex
+/.vs
+*.pyc
+db.sqlite3
+0*.py
+.DS_Store
+venv
+my_env
+.idea
+Django_proj/config.ini
